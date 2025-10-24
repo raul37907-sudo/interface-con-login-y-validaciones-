@@ -17,12 +17,13 @@ public class CrudAlmacen {
 	
 		
 		String sqlProductos ="INSERT INTO producto(producto,stock,estatus,precio_Proveedor, "
-				+ "Precio_Venta,fecha_Ingreso ,Descripción,Usuario_recibe) VALUES (?,?,?,?,?,?,?,?) ";	
+				+ "Precio_Venta,fecha_Ingreso ,Descripción,Usuario_recibe,puesto_recibe) VALUES (?,?,?,?,?,?,?,?,?) ";	
 		
 		try {
 			PreparedStatement psProductos = conexion.prepareStatement(sqlProductos);
 			int pos =1;
 			int posList = 0;
+			psProductos.setString(pos++,listProductos.get(posList++).toString() );
 			psProductos.setString(pos++,listProductos.get(posList++).toString() );
 			psProductos.setString(pos++,listProductos.get(posList++).toString() );
 			psProductos.setString(pos++,listProductos.get(posList++).toString() );

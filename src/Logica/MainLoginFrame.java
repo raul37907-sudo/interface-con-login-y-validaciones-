@@ -24,18 +24,18 @@ public class MainLoginFrame {
 
 		// te permite ver  el  flujo  desde login
 		
-		IguLogin.PantallaLogin pantallaPass = new IguLogin.PantallaLogin();
-		SwingUtilities.invokeLater(() -> {  //ejecuta el  codigo  en hilo event dispach thread (edt)  -> expresion lamda para ejecutar  codigo 
-			pantallaPass.setVisible(true);
-        });
+//		IguLogin.PantallaLogin pantallaPass = new IguLogin.PantallaLogin();
+//		SwingUtilities.invokeLater(() -> {  //ejecuta el  codigo  en hilo event dispach thread (edt)  -> expresion lamda para ejecutar  codigo 
+//			pantallaPass.setVisible(true);
+//        });
 		
 		
 		// la ventana  del  form  del  ventas 
 		
-//		iguVentas.TiendaGUI Pantallaentas = new iguVentas.TiendaGUI();
-//		SwingUtilities.invokeLater(() -> {  //ejecuta el  codigo  en hilo event dispach thread (edt)  -> expresion lamda para ejecutar  codigo 
-//			Pantallaentas.setVisible(true);
-//		});
+		iguVentas.TiendaGUI Pantallaentas = new iguVentas.TiendaGUI("you","tupp");
+		SwingUtilities.invokeLater(() -> {  //ejecuta el  codigo  en hilo event dispach thread (edt)  -> expresion lamda para ejecutar  codigo 
+			Pantallaentas.setVisible(true);
+		});
 	
 		// VISTA ALMACEN  
 		

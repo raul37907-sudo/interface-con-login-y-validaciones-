@@ -9,6 +9,10 @@ import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import IguLogin.PantallaLogin;
 import IguTablaUsuarios.CrearTablaUser;
 import Logica.CrudAlmacen;
+import Persistencia.ConexionDBMysql;
 
 @SuppressWarnings("serial")
 public class Almacen extends JFrame {
@@ -128,12 +133,10 @@ public class Almacen extends JFrame {
 		PanelEntrada.add(new JLabel("                                                Stock De Entrada:"));
 		PanelEntrada.add(fldStock);
 
-
 		PanelEntrada.add(new JLabel("                                                Precio proveedor:"));
 		PanelEntrada.add(FieldProvee);
 
 		PanelEntrada.add(new JLabel("                                                Descripción Producto:"));
-		//PanelEntrada.add(FldDescripcion);
 		PanelEntrada.add(scrollDescripcion);
 
 		PanelEntrada.add(panelBotones);
@@ -168,7 +171,40 @@ public class Almacen extends JFrame {
 		BtnAgregar(btnAdd,modelo);
 		btnRegresar(btnRegreso,correo,rol);
 		CrearTablaUser. btncerrarSesion (btnLogOut);
+		
+		
+		try {
+			obtenerProductos(modelo);
+		} catch (SQLException e1) {
+			System.out.println(" No Tienes Productos Para Mostrar" + e1.getMessage());
+		} 
 	}
+	
+	
+	public static void obtenerProductos(DefaultTableModel modelo) throws SQLException {
+		Connection conectarDB = ConexionDBMysql.getInstancia().getConnection();
+		Statement stmtUsuarios = conectarDB.createStatement();
+		ResultSet ResultadoRs = stmtUsuarios.executeQuery(" SELECT * FROM Producto "); // obtiene todos los campos de la
+		
+		while (ResultadoRs.next()) {
+			Object[] fila = { 
+					
+//						ResultadoRs.getString("id_Producto"), // ResultadoRs.getString("pass"),no se agrega ni id
+//					 	ResultadoRs.getInt("id_Producto"),
+					    ResultadoRs.getString("producto"),
+					    ResultadoRs.getInt("stock"),
+					    ResultadoRs.getString("estatus"),
+					    ResultadoRs.getBigDecimal("precio_Proveedor"),
+					    ResultadoRs.getBigDecimal("Precio_Venta"),
+					    ResultadoRs.getTimestamp("fecha_Ingreso"),
+					    ResultadoRs.getString("Descripción"),
+					    ResultadoRs.getString("Usuario_recibe")};
+			modelo.addRow(fila); // ya
+		}
+		ResultadoRs.close();
+		stmtUsuarios.close();
+	}
+	
 	
 	public static  void btnRegresar(JButton tbnRegreso,String correo,String  rol) {
 		tbnRegreso.addActionListener(e -> {
@@ -196,14 +232,15 @@ public class Almacen extends JFrame {
 
 				String producto = fldProducto.getText();
 				String Stock = fldStock.getText();
-				String estatus = ("Activo");
+				String estatus = ("1"); // "Activo" no  funciona
 				String precioProv  = FieldProvee.getText();
 				float precioVen  = (float) (Float.valueOf(precioProv) + (Float.valueOf(precioProv) * 0.28)) ;
 				String FechIngreso = lblHora.getText();
 				String preVenta = String.valueOf(precioVen);// regresamos  a string
 				String descripcion  = TxtAreaDescripcion.getText().toString();
 				String recibe = lblCorreo.getText();
-				String datosEntrada [] = { producto,Stock,estatus,precioProv,preVenta,FechIngreso,descripcion,recibe};
+				String puesto_recibe = lblRol.getText();
+				String datosEntrada [] = { producto,Stock,estatus,precioProv,preVenta,FechIngreso,descripcion,recibe,puesto_recibe};
 
 				modeloTabla.addRow(datosEntrada);
 				fldProducto.setText("");
@@ -221,6 +258,8 @@ public class Almacen extends JFrame {
 				ListProductos.add(FechIngreso); 
 				ListProductos.add(descripcion);
 				ListProductos.add(recibe);
+				ListProductos.add(puesto_recibe);
+				
 				
 				CrudAlmacen.CrudAddAlmacen(ListProductos);
 			}

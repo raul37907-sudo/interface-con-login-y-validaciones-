@@ -134,9 +134,7 @@ public class CrearTablaUser extends JPanel {
 
 		tablaUser = new JTable(modelo);
 		tablaUser.getColumnModel().getColumn(0).setPreferredWidth(10); // índice 3 = columna "fecha cambia el tamaño
-																		// de// las columnas
 		tablaUser.getColumnModel().getColumn(3).setPreferredWidth(65); // índice 3 = columna "fecha cambia el tamaño
-																		// de// las columnas
 		tablaUser.getColumnModel().getColumn(5).setPreferredWidth(180); // índice 4 = columna correo
 		tablaUser.getColumnModel().getColumn(6).setPreferredWidth(30); // índice 5 = columna estatus"
 		tablaUser.getColumnModel().getColumn(7).setPreferredWidth(30); // índice 6 = columna "app
@@ -153,7 +151,6 @@ public class CrearTablaUser extends JPanel {
 		panelContenedor.add(contenedorDerecha);
 		panelContenedor.add(scroll); // ✅ Tablaa
 		panelContenedor.add(panelBotones); // ✅ Botones
-
 		this.setLayout(new BorderLayout());
 		this.add(panelContenedor);
 
@@ -161,7 +158,7 @@ public class CrearTablaUser extends JPanel {
 			// enviamos el modelo a donde se van a cargar los datos de DB
 			obtenerUsuarios(modelo);
 		} catch (SQLException e) {
-			System.out.println("No  se puede enviar  el  modelo " + e.getMessage());
+			System.out.println("NO  SE PUEDE CARGAR  LOS  DATOS  " + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -174,7 +171,6 @@ public class CrearTablaUser extends JPanel {
 		PantallaLogin.cambioVisualBoton(btnEliminar);
 		btncerrarSesion(btnCerrarSeción);
 		comboBoxUserAlamcen(ComboBoxEditor,correo, rol);
-
 		configuracion(rol, btnModificar, btnEliminar, btnAgregar, btnCerrarSeción, ComboBoxEditor);
 
 		return this; // ✅ Devuelve el panel completo con tabla y botones
@@ -191,7 +187,6 @@ public class CrearTablaUser extends JPanel {
 				Almacen ventanaAlmacen = new Almacen(correo, rol);
 				ventanaAlmacen.setVisible(true);
 			}
-
 		});
 	}
 
@@ -243,7 +238,6 @@ public class CrearTablaUser extends JPanel {
 				ListLLenarForm.add(app);
 				ListLLenarForm.add(rol);
 				CrearVentanaDAO.llenarForm(ListLLenarForm);
-
 			}
 		});
 
@@ -307,15 +301,9 @@ public class CrearTablaUser extends JPanel {
 		Connection conectarDB = ConexionDBMysql.getInstancia().getConnection();
 		Statement stmtUsuarios = conectarDB.createStatement();
 		ResultSet ResultadoRs = stmtUsuarios.executeQuery(" SELECT * FROM Usuario "); // obtiene todos los campos de la
-																						// base de datos
-
-		// ResultSet ResultadoRs = stmtUsuarios.executeQuery(" SELECT
-		// id_usuario,nombre,apellido_paterno,apellido_materno,fecha_nacimiento,e_mail,estatus_activo,
-		// id_app,id_rol,pass FROM Usuario "); // ontenet todos los campos de la base de
-		// datos
+		
 		while (ResultadoRs.next()) {
-			Object[] fila = { ResultadoRs.getString("id_usuario"), // ResultadoRs.getString("pass"),no se agrega ni id
-																	// ni pass a la tabla de datos
+			Object[] fila = { ResultadoRs.getString("id_usuario"), 
 					ResultadoRs.getString("nombre"), ResultadoRs.getString("apellido_paterno"),
 					ResultadoRs.getString("apellido_materno"), ResultadoRs.getString("fecha_nacimiento"),
 					ResultadoRs.getString("e_mail"), validarEstatus(ResultadoRs.getInt("estatus_activo")),
@@ -326,6 +314,7 @@ public class CrearTablaUser extends JPanel {
 		ResultadoRs.close();
 		stmtUsuarios.close();
 	}
+	
 
 	public static String obtenerNameRolPorId(int idRol) {
 		String sql = "SELECT tipo_rol FROM Rol WHERE id_rol = ?";
@@ -390,3 +379,30 @@ public class CrearTablaUser extends JPanel {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

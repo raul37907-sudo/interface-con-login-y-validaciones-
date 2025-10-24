@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
 import java.awt.event.ActionListener;
@@ -25,7 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import IguLogin.PantallaLogin;
@@ -182,10 +180,8 @@ public class TiendaGUI extends JFrame {
 
 	public void btnAgregar(JButton btnAgregar) {
 		btnAgregar.addActionListener(e -> {
-
-			mostrarMensaje3Seg(lblMensaje);
 			try {
-
+				mostrarMensaje3Seg(lblMensaje);
 				String nombre = nombreField.getText();
 				double precio = Double.parseDouble(precioField.getText());
 				int cantidad = Integer.parseInt(cantidadField.getText());
@@ -248,7 +244,7 @@ public class TiendaGUI extends JFrame {
 
 	public static String obtenerFechaHoraActual() {
 		LocalDateTime ahora = LocalDateTime.now();
-		DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		return ahora.format(formato);
 	}
 

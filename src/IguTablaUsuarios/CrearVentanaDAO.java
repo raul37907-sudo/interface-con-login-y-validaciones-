@@ -314,7 +314,7 @@ public class CrearVentanaDAO extends JFrame {
 
 		btnCrear.addActionListener(e -> { // simplificacion lamba
 
-			List<String> datos = crearUsuariConClave();
+			List<String> datos = crearUserFormLogin();
 
 			if (datos == null) {
 				return;
@@ -331,6 +331,55 @@ public class CrearVentanaDAO extends JFrame {
 		});
 
 	}
+	
+	public List<String> crearUserFormLogin() {
+		ArrayList<String> listdatosDAO = null;
+
+		String nombre = nombreField.getText().trim();
+		String paterno = PaternoField.getText().trim();
+		String materno = maternoField.getText().trim();
+		String fecNaci = fechaField.getText().trim();
+		// LocalDate feNaci = LocalDate.parse(fecNaci);
+		// java.sql.Date sqlFecha = java.sql.Date.valueOf(feNaci);
+		String correo = mailField.getText().trim();
+		int estatus = 0;
+		int app = 5;  // ObtenerIdApp();
+		int rol = 4; // ObtenerIdRol();
+		String pass = pass2Field.getText().trim();
+		String passCifrado = PantallaLogin.cifrar(pass.trim(), 3);
+
+		if (nombre.equalsIgnoreCase("Igresa Nombre") || paterno.equalsIgnoreCase("Ingresa Apellido  Paterno")
+				|| materno.equalsIgnoreCase("Ingresa Apellido  Materno")
+				|| fecNaci.equalsIgnoreCase("Ingresa AAAA-MM-DD") || correo.equalsIgnoreCase("Ingresa  E-Mail")
+				|| pass.equalsIgnoreCase("Ingresa Contraseña") || passCifrado.equalsIgnoreCase("Confirma Contraseña")) {
+
+			JOptionPane.showMessageDialog(null, "⚠️ Debes Llenar Todos Los Campos");
+
+		} else {
+			listdatosDAO = new ArrayList<>();
+			listdatosDAO.add(nombre);
+			listdatosDAO.add(paterno);
+			listdatosDAO.add(materno);
+			listdatosDAO.add(fecNaci);
+			listdatosDAO.add(correo);
+			listdatosDAO.add(String.valueOf(estatus));
+			listdatosDAO.add(String.valueOf(app));
+			listdatosDAO.add(String.valueOf(rol));
+			listdatosDAO.add(passCifrado);
+			
+
+				boolean exito = CrudUserDAO.InsertarUser(nombre, paterno, materno, fecNaci, correo, estatus, app, rol,
+						passCifrado);
+				return exito ? List.of("ok") : null;
+			
+		}
+
+		return listdatosDAO;// se va a modificar o borrar
+	}
+	
+	
+	
+	
 
 	public void configurarModo(String correo, String modoDeLogin, String modoDeTabla) {
 		switch (modoDeTabla) {
@@ -339,21 +388,21 @@ public class CrearVentanaDAO extends JFrame {
 			btnBorrar.setVisible(false);
 			btnModificar.setVisible(true);
 			btnRegresar.setVisible(true);
-			rollbl.setVisible(false);
-			appLbl.setVisible(false);
-			estatusLbl.setVisible(false);
+			rollbl.setVisible(true);
+			appLbl.setVisible(true);
+			estatusLbl.setVisible(true);
 			passlbl.setVisible(false);
 			pass2lbl.setVisible(false);
 			passField.setVisible(false);
 			pass2Field.setVisible(false);
 //			btnCrear.setVisible(false);
-			comboApp.setVisible(false);
-			comboEstatus.setVisible(false);
-			comboRol.setVisible(false);
+			comboApp.setVisible(true);
+			comboEstatus.setVisible(true);
+			comboRol.setVisible(true);
 			btnCrearLogin.setVisible(false);
 			tbnBackLogin.setVisible(false);
 			mailField.setEditable(false);
-			this.setSize(350, 550);
+			this.setSize(350, 650);
 			panel.setBackground(new Color(220, 220, 220));
 			break;
 
@@ -602,7 +651,9 @@ public class CrearVentanaDAO extends JFrame {
 	public static int ObtenerIdApp() {
 
 		String validar = comboApp.getSelectedItem().toString();
-		if (validar.equalsIgnoreCase("Vix")) {
+	if (validar.equalsIgnoreCase("Null")) {
+		return 5;
+	}else if (validar.equalsIgnoreCase("Vix")) {
 			return 1;
 		} else if (validar.equalsIgnoreCase("YouTube")) {
 			return 2;
@@ -616,7 +667,9 @@ public class CrearVentanaDAO extends JFrame {
 	public static int ObtenerIdRol() {
 
 		String validar = comboRol.getSelectedItem().toString();
-		if (validar.equalsIgnoreCase("Supervisor")) {
+		if (validar.equalsIgnoreCase("Null")) {
+			return 4;
+		}else if (validar.equalsIgnoreCase("Supervisor")) {
 			return 1;
 		} else if (validar.equalsIgnoreCase("Encargado")) {
 			return 2;
@@ -809,7 +862,6 @@ public class CrearVentanaDAO extends JFrame {
 		comboEstatus.addItem(("Activo"));
 		comboEstatus.addItem(("Inactivo"));
 		comboEstatus.setMaximumSize(new Dimension(200, 30)); // 🔹 x, y, ancho, alto)); // ancho alto
-
 		return comboEstatus;
 	}
 
