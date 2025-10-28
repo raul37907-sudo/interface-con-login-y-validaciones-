@@ -80,7 +80,7 @@ public class CrudUserDAO {
 			stmtActualizar.setString(pos++, listactualizar.get(list++));
 			stmtActualizar.setString(pos++, listactualizar.get(list++));
 			stmtActualizar.setString(pos++, listactualizar.get(list++));
-			stmtActualizar.setString(pos++, listactualizar.get(list++));
+			stmtActualizar.setString(pos++, listactualizar.get(list++)); //id
 
 			int filas = stmtActualizar.executeUpdate();
 			if (filas > 0) {

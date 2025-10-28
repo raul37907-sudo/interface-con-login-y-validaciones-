@@ -3,6 +3,7 @@ package IguLogin;
 import IguTablaUsuarios.CrearTablaUser;
 import IguTablaUsuarios.CrearVentanaDAO;
 import Persistencia.ConexionDBMysql;
+import iguVentas.Almacen;
 import iguVentas.TiendaGUI;
 
 import java.awt.Color;
@@ -236,8 +237,8 @@ public class PantallaLogin extends JFrame {
 
 		String sqlUsuario = " SELECT r.tipo_rol FROM Usuario u JOIN Rol r ON u.id_rol = r.id_rol  WHERE u.e_mail = ? AND u.pass = ? ";
 
-		String nombre = obtenerNombrePorCorreo( correo);
-		
+		String nombre = obtenerNombrePorCorreo(correo);
+
 		try {
 			// Validar Gerente
 			PreparedStatement psGerente = conn.prepareStatement(sqlGerente);
@@ -248,12 +249,12 @@ public class PantallaLogin extends JFrame {
 			if (rsGerente.next()) {
 				// String rol = rsGerente.getString("tipo_rol");
 				AccesoCorrecto("LOGIN CORRECTO");
-				
+
 				Window ventana = SwingUtilities.getWindowAncestor(loginbtn);
 				ventana.dispose();
 				JOptionPane.showMessageDialog(null, "Permiso de Administrador");
 				CrearTablaUser tablaUsuarios = new CrearTablaUser();
-				
+
 				tablaUsuarios.creaVentana(nombre, "Administrador");
 				return true;
 			}
@@ -264,11 +265,12 @@ public class PantallaLogin extends JFrame {
 			psUsuario.setString(2, clave);
 			ResultSet rsUsuario = psUsuario.executeQuery();
 
+			
 			if (rsUsuario.next()) {
-				String rol = rsUsuario.getString("tipo_rol");
 				AccesoCorrecto("LOGIN CORRECTO");
-
-				if ("Supervisor".equalsIgnoreCase(rol.trim()) || "Encargado".equalsIgnoreCase(rol.trim())) {
+				String rol = rsUsuario.getString("tipo_rol");
+						
+				if ("Supervisor".equalsIgnoreCase(rol.trim())) {
 					Window ventana = SwingUtilities.getWindowAncestor(loginbtn);
 					ventana.dispose();
 					JOptionPane.showMessageDialog(null, "Acceso Correcto Eres : " + rol);
@@ -282,9 +284,18 @@ public class PantallaLogin extends JFrame {
 					TiendaGUI tienda = new TiendaGUI(nombre, rol);
 					tienda.setVisible(true);
 					return true;
-				}
-			}
+				}else if ("Encargado".equalsIgnoreCase(rol.trim())) {
+					JOptionPane.showMessageDialog(null, "Acceso Correcto Eres : " + rol);
+					Window ventana = SwingUtilities.getWindowAncestor(loginbtn);
+					ventana.dispose();
+					Almacen almacen = new Almacen(nombre, rol);
 
+					almacen.setVisible(true);
+
+					return true;
+			} 
+			
+			}
 			// Si ninguno coincide
 			AccesoInCorrecto("Correo o clave incorrectos");
 			return false;
@@ -306,43 +317,41 @@ public class PantallaLogin extends JFrame {
 	}
 
 	public static String obtenerNombrePorCorreo(String correo) {
-	    String nombreCompleto = "";
+		String nombreCompleto = "";
 
-	    try {
-	        Connection conn = ConexionDBMysql.getInstancia().getConnection();
+		try {
+			Connection conn = ConexionDBMysql.getInstancia().getConnection();
 
-	        // Buscar en tabla Usuario
-	        String sqlUsuario = "SELECT nombre, apellido_paterno, apellido_materno FROM Usuario WHERE e_mail = ?";
-	        PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario);
-	        stmtUsuario.setString(1, correo);
-	        ResultSet rsUsuario = stmtUsuario.executeQuery();
+			// Buscar en tabla Usuario
+			String sqlUsuario = "SELECT nombre, apellido_paterno, apellido_materno FROM Usuario WHERE e_mail = ?";
+			PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario);
+			stmtUsuario.setString(1, correo);
+			ResultSet rsUsuario = stmtUsuario.executeQuery();
 
-	        if (rsUsuario.next()) {
-	            nombreCompleto = rsUsuario.getString("nombre") + " " +
-	                             rsUsuario.getString("apellido_paterno") + " " +
-	                             rsUsuario.getString("apellido_materno");
+			if (rsUsuario.next()) {
+				nombreCompleto = rsUsuario.getString("nombre") + " " + rsUsuario.getString("apellido_paterno") + " "
+						+ rsUsuario.getString("apellido_materno");
 
-                return nombreCompleto;
+				return nombreCompleto;
 
-	        } else {
-	            // Buscar en tabla Gerente si no está en Usuario
-	            String sqlGerente = "SELECT nombre, paterno, materno FROM Gerente WHERE mail = ?";
-	            PreparedStatement stmtGerente = conn.prepareStatement(sqlGerente);
-	            stmtGerente.setString(1, correo);
-	            ResultSet rsGerente = stmtGerente.executeQuery();
+			} else {
+				// Buscar en tabla Gerente si no está en Usuario
+				String sqlGerente = "SELECT nombre, paterno, materno FROM Gerente WHERE mail = ?";
+				PreparedStatement stmtGerente = conn.prepareStatement(sqlGerente);
+				stmtGerente.setString(1, correo);
+				ResultSet rsGerente = stmtGerente.executeQuery();
 
-	            if (rsGerente.next()) {
-	                nombreCompleto = rsGerente.getString("nombre") + " " +
-	                                 rsGerente.getString("paterno") + " " +
-	                                 rsGerente.getString("materno");
-	                return nombreCompleto;
-	            }
-	        }
+				if (rsGerente.next()) {
+					nombreCompleto = rsGerente.getString("nombre") + " " + rsGerente.getString("paterno") + " "
+							+ rsGerente.getString("materno");
+					return nombreCompleto;
+				}
+			}
 
-	    } catch (SQLException e) {
-	        System.out.println("Error al obtener nombre por correo: " + e.getMessage());
-	    }
-	    return nombreCompleto.isEmpty() ? "Correo no encontrado" : nombreCompleto;
+		} catch (SQLException e) {
+			System.out.println("Error al obtener nombre por correo: " + e.getMessage());
+		}
+		return nombreCompleto.isEmpty() ? "Correo no encontrado" : nombreCompleto;
 	}
-	
+
 }
